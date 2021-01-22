@@ -1,0 +1,31 @@
+- hosts: host
+  tasks:
+    - name: "install haproxy"
+      package:
+        name: haproxy
+        state: present
+    - name: "configure haproxy.cfg file"     
+      template:
+           src: "/root/ansible_wks/ans_task_12/haproxy.cfg.j2"
+           dest: "/etc/haproxy/haproxy.cfg"
+    - name: "starting haproxy service"
+      service:
+        name: haproxy
+        state: restarted
+
+- hosts: targetnode
+  tasks:
+    - name: "installing httpd in ManagedNode"
+      package:
+        name: httpd
+        state: present
+    - name: "copying data to target node"
+      copy:
+        dest: /var/www/html/haproxy.html
+        content: "hiii from managed node"
+    - name: "start httpd service"
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
